@@ -1,5 +1,6 @@
 ﻿namespace TxtImg
 {
+    using System;
     using System.Collections.Generic;
     using System.Drawing;
     using System.IO;
@@ -29,8 +30,17 @@
         /// <returns>the list of strings containing the ascii representation</returns>
         private static IEnumerable<string> ImageToStrings(string url)
         {
+            const double artW = 80.0;
+            const double fontApproxWidthToHeightRatio = 40.0 / 80.0;
             var img = Image.FromStream(GetImageStreamFromURL(url));
-            var result = TxtImg.ImageHelper.ImageToValues.Convert(img, new Size(80, 50));
+            var imgW = img.Size.Width;
+            var ratio = artW / imgW;
+            var artH = ratio * img.Size.Height;
+
+            var w = Convert.ToInt32(artW);
+            var h = Convert.ToInt32(artH * fontApproxWidthToHeightRatio);
+
+            var result = TxtImg.ImageHelper.ImageToValues.Convert(img, new Size(w, h));
             var conv = new TxtImg.AsciiConversion.ValuesToFixedWidthTextConverter(BaseRamp);
             return conv.Apply(result);
         }
