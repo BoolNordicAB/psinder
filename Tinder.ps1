@@ -49,7 +49,7 @@ function Main-Loop() {
         $ImgUrl = "http://dev/_layouts/15/userphoto.aspx?accountname=$fullrecipientname&size=L"
 
         $Picture = Get-ImageAsAscii -Url $ImgUrl
-        $Name = $prof.Name
+        $Name = $prof.Name.Replace('ö','o')
         $Age = $prof.Age
         $Sex = $prof.Sex
 
@@ -57,7 +57,7 @@ function Main-Loop() {
         Write-Host "<-: Dislike, ->: Like, Q: quit" 
         Write-Host $Name -ErrorAction SilentlyContinue
         Write-Host "Age: $Age, Sex: $Sex" 
-        Write-Host "Bio: $($prof.Bio)" 
+        Write-Host "Bio: $($prof.Bio.Replace('ö','o'))" 
         #Write-Host $ascii 
     
         # wait for input 
@@ -84,6 +84,7 @@ function Main-Loop() {
             {
                 $MatchName = $prof.Name
                 Write-Host "You've matched with $MatchName!" -ForegroundColor Green
+                Show-BalloonTip -Title "Match!" -Message "You've matched with $MatchName!"
                 Write-Host "Press enter to continue!"
                 Read-Host
             }
