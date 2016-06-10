@@ -4,21 +4,27 @@ Remove-Variable * -ErrorAction SilentlyContinue; Remove-Module *; $error.Clear()
  
 #$DEBUG = $true 
  
-Import-Module -name "$PSScriptRoot\Modules\SPIntegration.psm1" -Force #import the real stuff here 
-Import-Module -name "$PSScriptRoot\Modules\DataAccessLayer.psm1" -Force
-Import-Module -name "$PSScriptRoot\Modules\txtimg.dll" -Verbose -Force
+Import-Module -name "$PSScriptRoot\Modules\SPIntegration.psm1" -Force -ErrorAction SilentlyContinue -DisableNameChecking
+Import-Module -name "$PSScriptRoot\Modules\DataAccessLayer.psm1" -Force -ErrorAction SilentlyContinue -DisableNameChecking
+Import-Module -name "$PSScriptRoot\Modules\txtimg.dll" -Force -ErrorAction SilentlyContinue -DisableNameChecking
+
+$WelcomeImage = Get-ImageAsAscii -Url "http://5pz91qmfi1-flywheel.netdna-ssl.com/wp-content/uploads/2014/08/Screen-Shot-2014-08-13-at-5.52.38-AM-640x250.jpg"
+
+Write-Host $WelcomeImage 
+
+Write-Host ""
+Write-Host ""
 
 Write-Host "Welcome to Psinder!" 
+Write-Host "Log in as: "
+$LoginName = Read-Host
 $domain = [Environment]::UserDomainName 
-$uname = [Environment]::UserName 
-$fullusername = ($domain + "\" + $uname)
-Write-Host "You are: $domain\$uname" 
+$fullusername = ($domain + "\" + $LoginName)
+Write-Host "You are: $domain\$LoginName" 
  
  
-function Main-Loop() { 
- 
-    
- 
+function Main-Loop() {
+
     $prof = Get-RandomProfile
 
     $fullrecipientname = ($domain + "\" + $prof.Id)
@@ -27,19 +33,30 @@ function Main-Loop() {
     $PreviouslyLikedOrDisliked = Check-IfInstagatedPreviously -InstigatorAccountName $fullusername -RecipientAccountName $fullrecipientname
 
     # If previously liked or disliked, restart the loop
-    if($PreviouslyLikedOrDisliked -eq $true)
+    if($PreviouslyLikedOrDisliked -eq $true -or [String]::IsNullOrEmpty($prof.Name))
     {
         Main-Loop
     }
     else
     {
+        Clear-Host
+
+        Write-Host $WelcomeImage 
+
+        Write-Host ""
+        Write-Host ""
 
         $ImgUrl = "http://dev/_layouts/15/userphoto.aspx?accountname=$fullrecipientname&size=L"
-        Write-Output $ImgUrl
+
         $Picture = Get-ImageAsAscii -Url $ImgUrl
+        $Name = $prof.Name
+        $Age = $prof.Age
+        $Sex = $prof.Sex
+
         Write-Host $Picture
         Write-Host "<-: Dislike, ->: Like, Q: quit" 
-        Write-Host "$($prof.Name)`nAge: $($prof.Age), Sex: $($prof.Sex)" 
+        Write-Host $Name -ErrorAction SilentlyContinue
+        Write-Host "Age: $Age, Sex: $Sex" 
         Write-Host "Bio: $($prof.Bio)" 
         #Write-Host $ascii 
     
@@ -67,6 +84,7 @@ function Main-Loop() {
             {
                 $MatchName = $prof.Name
                 Write-Host "You've matched with $MatchName!" -ForegroundColor Green
+                Write-Host "Press enter to continue!"
                 Read-Host
             }
         } # if Dislike
