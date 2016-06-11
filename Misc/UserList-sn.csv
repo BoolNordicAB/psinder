@@ -1,0 +1,2 @@
+FirstName;LastName;MailDomain;SAM;OU;Password;Description
+Bjorn;Svensson;contoso.local;bjorns;OU=Tinder Users,DC=contoso,DC=com;Passw0rd;Tinder User
