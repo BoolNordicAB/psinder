@@ -1,6 +1,7 @@
 ﻿function Get-Profiles { 
-    asnp *share* 
-    $MySiteHostUrl = "http://dev"
+    #asnp *share* 
+    Add-PSSnapin -Name Microsoft.SharePoint.Powershell -ErrorAction SilentlyContinue
+    $MySiteHostUrl = $global:config.settings.sp.mysiteurl #"http://dev"
  
     $MySiteHostSite = Get-SPSite $MySiteHostUrl 
  

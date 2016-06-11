@@ -3,10 +3,15 @@
 Remove-Variable * -ErrorAction SilentlyContinue; Remove-Module *; $error.Clear(); Clear-Host 
  
 #$DEBUG = $true 
- 
-Import-Module -name "$PSScriptRoot\Modules\SPIntegration.psm1" -Force -ErrorAction SilentlyContinue -DisableNameChecking
-Import-Module -name "$PSScriptRoot\Modules\DataAccessLayer.psm1" -Force -ErrorAction SilentlyContinue -DisableNameChecking
-Import-Module -name "$PSScriptRoot\Modules\txtimg.dll" -Force -ErrorAction SilentlyContinue -DisableNameChecking
+#$PSScriptRoot = "."
+
+#Write-Host $MyInvocation.MyCommand.Path -ForeGroundColor Magenta
+$scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
+Import-Module -name "$scriptDir\Modules\SPIntegration.psm1" -Force -DisableNameChecking # -ErrorAction SilentlyContinue 
+Import-Module -name "$scriptDir\Modules\DataAccessLayer.psm1" -Force -DisableNameChecking #-ErrorAction SilentlyContinue
+Import-Module -name "$scriptDir\Modules\txtimg.dll" -Force -DisableNameChecking # -ErrorAction SilentlyContinue
+
+[xml]$global:config = Get-Content $scriptDir\App.config
 
 $WelcomeImage = Get-ImageAsAscii -Url "http://5pz91qmfi1-flywheel.netdna-ssl.com/wp-content/uploads/2014/08/Screen-Shot-2014-08-13-at-5.52.38-AM-640x250.jpg"
 
@@ -45,11 +50,11 @@ function Main-Loop() {
 
         Write-Host ""
         Write-Host ""
-
-        $ImgUrl = "http://dev/_layouts/15/userphoto.aspx?accountname=$fullrecipientname&size=L"
+        $url = $global:config.settings.sp.mysiteurl
+        $ImgUrl = "$url/_layouts/15/userphoto.aspx?accountname=$fullrecipientname&size=L"
 
         $Picture = Get-ImageAsAscii -Url $ImgUrl
-        $Name = $prof.Name.Replace('ö','o')
+        $Name = $prof.Name #.Replace('ï¿½','o')
         $Age = $prof.Age
         $Sex = $prof.Sex
 
@@ -57,7 +62,7 @@ function Main-Loop() {
         Write-Host "<-: Dislike, ->: Like, Q: quit" 
         Write-Host $Name -ErrorAction SilentlyContinue
         Write-Host "Age: $Age, Sex: $Sex" 
-        Write-Host "Bio: $($prof.Bio.Replace('ö','o'))" 
+        Write-Host "Bio: $($prof.Bio)" 
         #Write-Host $ascii 
     
         # wait for input 
