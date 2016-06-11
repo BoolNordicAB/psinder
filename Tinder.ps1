@@ -4,8 +4,6 @@ Remove-Variable * -ErrorAction SilentlyContinue; Remove-Module *; $error.Clear()
  
 #$DEBUG = $true 
 #$PSScriptRoot = "."
-
-#Write-Host $MyInvocation.MyCommand.Path -ForeGroundColor Magenta
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 Import-Module -name "$scriptDir\Modules\SPIntegration.psm1" -Force -DisableNameChecking # -ErrorAction SilentlyContinue 
 Import-Module -name "$scriptDir\Modules\DataAccessLayer.psm1" -Force -DisableNameChecking #-ErrorAction SilentlyContinue

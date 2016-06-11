@@ -1,6 +1,7 @@
 ﻿#sets the two new properties Age and Sex
-[xml]$config = Get-Content .\App.config
-Import-Module -name ".\Modules\SPIntegration.psm1" -Force #-ErrorAction SilentlyContinue -DisableNameChecking
+[xml]$global:config = Get-Content .\App.config
+$scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
+Import-Module -name "$scriptDir\Modules\SPIntegration.psm1" -Force #-ErrorAction SilentlyContinue -DisableNameChecking
 New-UserProfileProperty -Propertyname "T-Age" -Propertydisplayname "Age" -Description "User Age"
 New-UserProfileProperty -Propertyname "T-Sex" -Propertydisplayname "Sex" -Description "M for Male, F for Female"
 
