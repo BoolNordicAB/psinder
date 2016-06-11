@@ -7,6 +7,7 @@ Remove-Variable * -ErrorAction SilentlyContinue; Remove-Module *; $error.Clear()
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 Import-Module -name "$scriptDir\Modules\SPIntegration.psm1" -Force -DisableNameChecking # -ErrorAction SilentlyContinue 
 Import-Module -name "$scriptDir\Modules\DataAccessLayer.psm1" -Force -DisableNameChecking #-ErrorAction SilentlyContinue
+Import-Module -name "$scriptDir\Modules\UI.psm1" -Force -DisableNameChecking #-ErrorAction SilentlyContinue
 Import-Module -name "$scriptDir\Modules\txtimg.dll" -Force -DisableNameChecking # -ErrorAction SilentlyContinue
 
 [xml]$global:config = Get-Content $scriptDir\App.config
@@ -52,7 +53,7 @@ function Main-Loop() {
         $ImgUrl = "$url/_layouts/15/userphoto.aspx?accountname=$fullrecipientname&size=L"
 
         $Picture = Get-ImageAsAscii -Url $ImgUrl
-        $Name = $prof.Name #.Replace('�','o')
+        $Name = $prof.Name
         $Age = $prof.Age
         $Sex = $prof.Sex
 
